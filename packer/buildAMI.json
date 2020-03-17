@@ -35,7 +35,7 @@
         {
             "type": "ansible",
             "playbook_file": "../ansible/play.yml",
-            "extra_arguments": ["-e", "env={{user `env`}} app_repo={{user `app_repo`}} app_port={{user `app_port`}}"]
+            "extra_arguments": ["-e", "env={{user `env`}} app_repo={{user `app_repo`}} app_port={{user `app_port`}} role={{user `role`}}"]
         }
     ]
 }
