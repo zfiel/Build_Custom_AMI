@@ -1,7 +1,7 @@
 properties([
     parameters([
         choice(choices: ['dev', 'preprod', 'prod'],description: '', name: 'ENV'),
-        choice(choices: ['website', 'utils', 'fail2ban', 'nginx', 'mongodb', 'nodejs', 'certbot'],description: '', name: 'ROLE'),
+        choice(choices: ['website', 'utils', 'fail2ban', 'nginx', 'mongodb', 'certbot'],description: '', name: 'ROLE'),
         string(defaultValue: 'WebApache', description: '', name: 'APP_NAME', trim: false),
         string(defaultValue: '443', description: '', name: 'APP_PORT', trim: false),
         string(defaultValue: 'us-east-1', description: '', name: 'APP_REGION', trim: false),
