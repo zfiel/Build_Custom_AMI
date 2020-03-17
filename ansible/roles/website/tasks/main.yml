@@ -60,8 +60,3 @@
     dest: /var/www/html
   notify:
     - restart apache2
-
-handlers:
-- name: restart apache2
-  become: yes
-  service: name=apache2 state=restarted
