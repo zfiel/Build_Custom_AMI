@@ -1,0 +1,12 @@
+---
+- hosts: all
+  become: yes
+  roles:
+    - "{{ role }}"
+    # - website      
+    # - utils
+    # - fail2ban
+    # - nginx
+    # - mongodb
+    # - nodejs
+    # - certbot

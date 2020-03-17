@@ -1,0 +1,25 @@
+---
+
+- name: "Debian: Add repo.mongodb.org repository GPG key"
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: 9DA31620334BD75D9DCB49F368818C72E52529D4
+    state: present
+  when: not mongodb__apt_localkey
+
+- name: "Debian: Add local repository GPG key"
+  apt_key:
+    data: "{{ lookup('file', 'mongodb-4.gpg') }}"
+    state: present
+  when: mongodb__apt_localkey
+
+- name: "Debian: Configure repo.mongodb.org apt repository"
+  apt_repository:
+    repo: "{{ mongodb__apt_repo[ ansible_distribution ] }}"
+    state: present
+    update_cache: yes
+
+- name: "Debian: Install mongodb packages"
+  apt:
+    name: "{{ mongodb__packages }}"
+    state: present

@@ -1,0 +1,7 @@
+---
+# tasks file for utils
+- name: Install dependencies
+  apt:
+    name: ['python3','python2.7','git','vim','nano','htop']
+    update_cache: yes
+    state: latest

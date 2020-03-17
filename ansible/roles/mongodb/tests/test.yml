@@ -1,0 +1,20 @@
+---
+
+- hosts: test
+  tasks:
+    - name: "Install Dependencies packages"
+      apt:
+        name: [ "gnupg", "dirmngr" ]
+        state: present
+
+
+- hosts: test
+  roles:
+    - role: '../../.'
+      mongodb__apt_localkey: true
+      mongodb__packages: ['mongodb-org-server', 'mongodb-org-shell', 'mongodb-org-tools']
+      mongodb__conf_bindIp: "0.0.0.0"
+      mongodb__conf_extra: |
+        net.maxIncomingConnections: 1024
+        net:
+          ipv6: false
