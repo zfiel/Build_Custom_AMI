@@ -32,10 +32,17 @@ pipeline {
                 sh "echo APP_REPO: $APP_REPO"
             }
         }
+        
+        stage('Clean Jenkins Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+        
         stage('Get git repository') {
             steps {
                 git(
-                    url: 'https://github.com/zfiel/Build_WebAMI_Pauline.git',
+                    url: 'https://github.com/zfiel/Build_Custom_AMI.git',
                     credentialsId: 'e7aa4132-ba7d-44ff-aaef-366463f7dcc2',
                     branch: "${GitBranch}"
                 )
@@ -59,11 +66,5 @@ pipeline {
                 }
             }
         }	
-	
-    	stage('Clean Jenkins Workspace') {
-            steps {
-                cleanWs()
-            }
-        }
     }
 }
