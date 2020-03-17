@@ -1,0 +1,69 @@
+properties([
+    parameters([
+        choice(choices: ['dev', 'preprod', 'prod'],description: '', name: 'ENV'),
+        choice(choices: ['website', 'utils', 'fail2ban', 'nginx', 'mongodb', 'nodejs', 'certbot'],description: '', name: 'ROLE'),
+        string(defaultValue: 'WebApache', description: '', name: 'APP_NAME', trim: false),
+        string(defaultValue: '443', description: '', name: 'APP_PORT', trim: false),
+        string(defaultValue: 'us-east-1', description: '', name: 'APP_REGION', trim: false),
+        string(defaultValue: 'https://github.com/cloudacademy/static-website-example', description: '', name: 'APP_REPO', trim: false)
+    ]),
+    disableConcurrentBuilds(),
+    buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '1', numToKeepStr: '3'))
+])
+
+pipeline {
+    agent any
+    
+    environment {
+        GitBranch = "master"
+        def ec2_ip = sh(script: 'curl http://169.254.169.254/latest/meta-data/public-ipv4', returnStdout: true)
+    }
+
+    stages {
+        stage('Check Vars') {
+            steps {
+                sh "echo check first if vars are compliant"
+		
+                sh "echo ENV: $ENV"
+                sh "echo ENV: $ROLE"
+                sh "echo APP_NAME: $APP_NAME"
+                sh "echo APP_REGION: $APP_REGION"
+                sh "echo APP_PORT: $APP_PORT"
+                sh "echo APP_REPO: $APP_REPO"
+            }
+        }
+        stage('Get git repository') {
+            steps {
+                git(
+                    url: 'https://github.com/zfiel/Build_WebAMI_Pauline.git',
+                    credentialsId: 'e7aa4132-ba7d-44ff-aaef-366463f7dcc2',
+                    branch: "${GitBranch}"
+                )
+            }
+        }
+	
+        stage('Build AMI') {
+            steps {
+                dir ("packer"){
+                    wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
+                        sh "packer build \
+                        -var ec2_ip=$ec2_ip \
+                        -var env=$ENV \
+                        -var app_repo=$APP_REPO \
+                        -var app_name=$APP_NAME \
+                        -var app_port=$APP_PORT \
+                        -var app_region=$APP_REGION \
+                        -var role=$ROLE \
+                        buildAMI.json"
+                    }
+                }
+            }
+        }	
+	
+    	stage('Clean Jenkins Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+    }
+}
