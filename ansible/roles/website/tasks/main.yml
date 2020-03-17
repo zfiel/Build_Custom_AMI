@@ -1,6 +1,4 @@
 ---
-- hosts: all
-  tasks:
     - name: Install Python3
       become: yes
       apt: name=python3 update_cache=yes state=latest
